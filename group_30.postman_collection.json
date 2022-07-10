@@ -111,9 +111,9 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							" //3 \r",
+							" //3 Спарсить response body в json.\r",
 							"    var responce = pm.response.json();// присвоить переменной ответ от сервера(спарсить responce body в JSON)\r",
-							"    var data=JSON.parse(responseBody); // можно парсить и так\r",
+							"    var data=JSON.parse(responseBody); // можно парсить и так ???\r",
 							"//     console.log(jsonData.family.u_salary_1_5_year);\r",
 							"\r",
 							"// let salary = jsonData.family.u_salary_1_5_year;\r",
@@ -121,34 +121,34 @@
 							"\r",
 							"// pm.environment.set(\"salary\",salary); // присвоить set в переменную salary введенную ранне в environments значение - jsonData.family.u_salary_1_5_year.\r",
 							"\r",
-							"//4\r",
+							"//4.Проверить, что name в ответе равно name s request (name вбить руками.)\r",
 							"pm.test(\"Проверить на name res-req\", function () {\r",
 							"    pm.expect(responce.name).to.eql('Ivan');\r",
 							"});\r",
 							"\r",
-							"//5\r",
+							"//5.Проверить, что age в ответе равно age s request (age вбить руками.)\r",
 							"pm.test(\"Проверить на age res-req\", function () {\r",
 							"    pm.expect(responce.age).to.eql('29');\r",
 							"});\r",
-							"//6\r",
+							"//6 Проверить, что salary в ответе равно salary s request (salary вбить руками.)\r",
 							"pm.test(\"Проверить на salary res-req\", function () {\r",
 							"    pm.expect(responce.salary).to.eql(1000);\r",
 							"});\r",
-							"//7\r",
-							"var request = request.data // спарсить весь request метод POST\r",
+							"//7.Спарсить request.\r",
+							"var request = request.data // спарсить весь request. Когда request в Body\r",
 							"var name_req=request.name  // спарсить опр. значения\r",
 							"var age_req=request.age\r",
 							"var salary_req=parseInt(request.salary)\r",
 							"console.log(salary_req)\r",
-							"//8\r",
+							"//8.Проверить, что name в ответе равно name s request (name забрать из request.)\r",
 							"pm.test(\"Check name from responce to request\", function () {\r",
 							"    pm.expect(responce.name).to.eql(name_req);\r",
 							"});\r",
-							"//9\r",
+							"//9.Проверить, что age в ответе равно age s request (age забрать из request.)\r",
 							"pm.test(\"Check age from responce to request\", function () {\r",
 							"    pm.expect(responce.age).to.eql(age_req);\r",
 							"});\r",
-							"//10\r",
+							"//10.Проверить, что salary в ответе равно salary s request (salary забрать из request.)\r",
 							"pm.test(\"Check salary from responce to request\", function () {\r",
 							"    pm.expect(responce.salary).to.eql(salary_req);\r",
 							"});\r",
@@ -220,7 +220,7 @@
 							"//3.Спарсить response body в json.\r",
 							"var response = pm.response.json();\r",
 							"//4. Спарсить request метод GET\r",
-							"var request = pm.request.url.query.toObject() // парсить в request в GET METHOD!!!!!!!\r",
+							"var request = pm.request.url.query.toObject() // парсить в request если есть параметры в URL\r",
 							"var requestName = request.name\r",
 							"var requestAge = request.age\r",
 							"var requestSalary = parseInt(request.salary)\r",
@@ -256,6 +256,8 @@
 							"pm.test(\"Check that age is 4\", function () {\r",
 							"    pm.expect(response.family.pets.dog.age).to.eql(4);\r",
 							"});\r",
+							"let requestAge1 = +request.age\r",
+							"console.log(requestAge1)\r",
 							""
 						],
 						"type": "text/javascript"
@@ -358,10 +360,10 @@
 							" pm.environment.set(\"age\", response.age);\r",
 							" pm.environment.set(\"salary\", response.salary[0]);\r",
 							"//21.Написать цикл который выведет в консоль по порядку элементы списка из параметра salary.\r",
-							"for(i=0;i<response.salary.length;i++)\r",
-							"break;\r",
-							"console.log(response.person);\r",
-							
+							"for(i=0;i<response.salary.length;i++){\r",
+							"    console.log('salary is', (response.salary[i]))\r",
+							"    pm.environment.set(\"variable_key\", \"variable_value\");\r",
+							"}\r",
 							""
 						],
 						"type": "text/javascript"
@@ -468,6 +470,22 @@
 							"    pm.expect(response.person.u_salary_5_years).to.eql(parseInt(request.salary*4.2));\r",
 							"});\r",
 							"//22.Написать цикл который выведет в консоль по порядку элементы списка из параметра person.\r",
+							"for (const element in response.person){\r",
+							"console.log(element)\r",
+							"}\r",
+							"\r",
+							"\r",
+							"// pm.test(\"Status code is 200\",()=> {\r",
+							"//     pm.response.to.have.status(200);\r",
+							"// });\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
 							""
 						],
 						"type": "text/javascript"
@@ -509,6 +527,151 @@
 					"port": "5005",
 					"path": [
 						"user_info_2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user_info_2 ТОЛЯ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let requestCSV = request.data\r",
+							"function nameValidation (requestCSV) {\r",
+							"    if(requestCSV.name.length>=3 && requestCSV.name.length <=40 && requestCSV.name.trim() === requestCSV.name) {\r",
+							"        return true\r",
+							"    } return false\r",
+							"}\r",
+							"function ageValidation (requestCSV) {\r",
+							"   if(requestCSV.age>=18 && requestCSV.age<=120 && Number.isInteger(+requestCSV.age)) {\r",
+							"        return true\r",
+							"    } return false\r",
+							"}\r",
+							"function salaryValidation (requestCSV) {\r",
+							"   if(requestCSV.salary>=1 && requestCSV.salary<=1000000 && Number.isInteger(+requestCSV.salary)) {\r",
+							"        return true\r",
+							"    } return false\r",
+							"}\r",
+							"if (nameValidation(requestCSV) && ageValidation(requestCSV) && salaryValidation(requestCSV)) {\r",
+							"\t pm.test(`Status code is 200 with name = ${requestCSV.name}, age = ${requestCSV.age}, salary = ${requestCSV.salary}`, function() {\r",
+							" pm.response.to.have.status(200);\r",
+							"   })\r",
+							"} else {\r",
+							"pm.test(`Status code is not 200 with name = ${requestCSV.name}, age = ${requestCSV.age}, salary = ${requestCSV.salary}`, function() {\r",
+							"  pm.response.to.not.have.status(200);\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "{{name}}",
+							"type": "text"
+						},
+						{
+							"key": "age",
+							"value": "{{age}}",
+							"type": "text"
+						},
+						{
+							"key": "salary",
+							"value": "{{salary}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://162.55.220.72:5005/user_info_2",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"user_info_2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let response = pm.response.json()\r",
+							"let responseage = +pm.response.json().age\r",
+							"let request1 = request.data\r",
+							"\r",
+							"\r",
+							"console.log(response)\r",
+							"console.log(typeof(responseage),responseage)\r",
+							"console.log(request1)\r",
+							"console.log(response.salary)\r",
+							"console.log(request1.age)\r",
+							"let json = JSON.stringify(response)\r",
+							"console.log(json)\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(response.family).to.have.property(\"children\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "age",
+							"value": "30",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Ivan",
+							"type": "text"
+						},
+						{
+							"key": "salary",
+							"value": "500",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://162.55.220.72:5005/user_info_3",
+					"protocol": "http",
+					"host": [
+						"162",
+						"55",
+						"220",
+						"72"
+					],
+					"port": "5005",
+					"path": [
+						"user_info_3"
 					]
 				}
 			},
